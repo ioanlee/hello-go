@@ -26,17 +26,10 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "method not supported", http.StatusNotFound)
 		return
 	}
-
-	// fmt.Fprintf(w, "hello!")
-	json.NewEncoder(w).Encode(Articles)
+	fmt.Fprintf(w, "hello!")
 }
 
 func main() {
-	endpointList = []string{
-		"/": "get info on all endpoints",
-		"/movies": "get info"
-	}
-
 	fileServer := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fileServer)
 	http.HandleFunc("/form", formHandler)

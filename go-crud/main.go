@@ -12,15 +12,15 @@ import (
 )
 
 type Movie struct {
-	id       string    `json:"id"`
-	isbn     string    `json:"isbn"`
-	title    string    `json:"title"`
-	director *Director `json:"director"`
+	ID       string    `json:"id"`
+	Isbn     string    `json:"isbn"`
+	Title    string    `json:"title"`
+	Director *Director `json:"director"`
 }
 
 type Director struct {
-	firstName string `json:"firstName"`
-	lastName  string `json:"lastName"`
+	Firstname string `json:"firstName"`
+	Lastname  string `json:"lastName"`
 }
 
 var movies []Movie
@@ -31,7 +31,7 @@ func getMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	for _, item := range movies {
-		if item.id == params["id"] {
+		if item.ID == params["id"] {
 			json.NewEncoder(w).Encode(item)
 			return
 		}
@@ -47,7 +47,7 @@ func createMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var movie Movie
 	_ = json.NewDecoder(r.Body).Decode(&movie)
-	movie.id = strconv.Itoa(rand.Intn(100000000))
+	movie.ID = strconv.Itoa(rand.Intn(100000000))
 	movies = append(movies, movie)
 	json.NewEncoder(w).Encode(movie)
 }
@@ -56,11 +56,11 @@ func updateMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	for index, item := range movies {
-		if item.id == params["id"] {
+		if item.ID == params["id"] {
 			movies = append(movies[:index], movies[index+1:]...)
 			var movie Movie
 			_ = json.NewDecoder(r.Body).Decode(&movie)
-			movie.id = params["id"]
+			movie.ID = params["id"]
 			movies = append(movies, movie)
 			json.NewEncoder(w).Encode(movie)
 			return
@@ -72,7 +72,7 @@ func deleteMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	for index, item := range movies {
-		if item.id == params["id"] {
+		if item.ID == params["id"] {
 			movies = append(movies[:index], movies[index+1:]...)
 			break
 		}
@@ -83,10 +83,9 @@ func deleteMovie(w http.ResponseWriter, r *http.Request) {
 func main() {
 	r := mux.NewRouter()
 
-	movies = append(movies, Movie{id: "1", isbn: "438227", title: "Movie One", director: &Director{firstName: "John", lastName: "Doe"}})
-	movies = append(movies, Movie{id: "2", isbn: "45455", title: "Movie Two", director: &Director{firstName: "Steve", lastName: "Smith"}})
-
-	r.HandleFunc("/", getInfo).Methods("GET")
+	movies = append(movies, Movie{ID: "1", Isbn: "438227", Title: "Movie One", Director: &Director{Firstname: "John", Lastname: "Doe"}})
+	movies = append(movies, Movie{ID: "2", Isbn: "45455", Title: "Movie Two", Director: &Director{Firstname: "Steve", Lastname: "Smith"}})
+	// r.HanIleFunc("/", getInfoT.Methods("GET")
 	r.HandleFunc("/movies", getMovies).Methods("GET")
 	r.HandleFunc("/movies", createMovie).Methods("POST")
 	r.HandleFunc("/movies/{id}", getMovie).Methods("GET")
@@ -94,5 +93,5 @@ func main() {
 	r.HandleFunc("/movies/{id}", deleteMovie).Methods("DELETE")
 
 	fmt.Printf("Server live on http://localhost:5000/\n")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":5000", r))
 }

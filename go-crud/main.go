@@ -25,8 +25,6 @@ type Director struct {
 
 var movies []Movie
 
-func getInfo(w http.ResponseWriter, r *http.Request) {}
-
 func getMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
@@ -79,6 +77,8 @@ func deleteMovie(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(movies)
 }
+
+// func getInfo(w http.ResponseWriter, r *http.Request) {}
 
 func main() {
 	r := mux.NewRouter()

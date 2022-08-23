@@ -1,13 +1,17 @@
 package main
 
 import (
-	"fmt"
-	// "github.com/uber-go/zap"
+	"log"
+	"net/http"
+
+	"github.com/gorilla/mux"
+	"github.com/ioanlee/hello-go/go-crud/pkg/routes"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 func main() {
-	fmt.Printf("hello")
-	// logger, _ := zap.NewProduction()
-	// defer logger.Sync()
-	// sugar := logger.Sugar()
+	r := mux.NewRouter()
+	routes.RegisterBookstoreRoutes(r)
+	http.Handle("/", r)
+	log.Fatal(http.ListenAndServe("localhost:9010", r))
 }

@@ -1,9 +1,8 @@
 package main
 
 import (
+	"html/template"
 	"net/http"
-
-	"github.com/ioanlee/hello-go/go-auth/users"
 )
 
 func userHandler(w http.ResponseWriter, r *http.Request) {
@@ -22,8 +21,30 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 func getSignInPage(w http.ResponseWriter, r *http.Request) {}
 func getSignUpPage(w http.ResponseWriter, r *http.Request) {}
 
-func signInUser(w http.ResponseWriter, r *http.Request) {}
-func signUpUser(w http.ResponseWriter, r *http.Request) {}
+func signInUser(w http.ResponseWriter, r *http.Request) {
+	newUser := getUser(r)
+	ok := users.DefaultUserService.verifyUser(newUser)
+	fileName := "sign-in.html"
+	t, _ := template.ParseFiles(fileName)
+	if !ok {
+		t.ExecuteTemplate(w, fileName, "user sign-in failure")
+		return
+	}
+	t.ExecuteTemplate(w, fileName, "user sign-in success")
+	return
+}
+func signUpUser(w http.ResponseWriter, r *http.Request) {
+	newUser := getUser(r)
+	err := users.DefaultUserService.createUser(newUser)
+	fileName := "sign-up.html"
+	t, _ := template.ParseFiles(fileName)
+	if err != nil {
+		t.ExecuteTemplate(w, fileName, "new user sign-up failure")
+		return
+	}
+	t.ExecuteTemplate(w, fileName, "new user sign-up success")
+	return
+}
 
 func getCredentials(r *http.Request) users.User {
 	email := r.FormValue("email")
